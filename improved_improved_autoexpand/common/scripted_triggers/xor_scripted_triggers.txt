@@ -1,0 +1,71 @@
+﻿default_auto_expand_rule = {
+#	cash_reserves_ratio > 0.95		# vanilla disabled, instead used in OR below
+	state.market_access > 0.99		# stricter than vanilla: don't expand if market access is not 100% because expanding strains low infra (implied from low market access) even more
+	occupancy >= 0.95			# vanilla
+	building_has_goods_shortage = no	# not vanilla, but expanding while short on goods increases that issue even more, so don't do it
+	OR = {					# subsidized OR profitable
+		is_subsidized = yes
+		AND = {
+			cash_reserves_ratio > 0.95
+			weekly_profit > 0
+		}
+	}
+	NOT = { is_under_construction = yes }	# added from railway: don't build if already is building
+}
+
+xor_railway_auto_expand_rule = {
+	occupancy >= 0.8			# vanilla
+	OR = {					# tweaked vanilla: subsidized OR profitable
+		is_subsidized = yes
+		AND = {
+			cash_reserves_ratio > 0.5
+			weekly_profit > 0
+		}
+	}
+	state = {
+		OR = {
+			sg:transportation = { 
+				state_goods_pricier > 0.33
+			}
+			relative_infrastructure < 1		# checks infrastructure directly instead of market access which gets rid of some edge cases where you have low market access but enough infra
+		}
+	}
+	building_has_goods_shortage = no	# except if low on goods
+	NOT = { is_under_construction = yes }
+}
+
+xor_power_auto_expand_rule = {
+	occupancy >= 0.95
+	building_has_goods_shortage = no
+	OR = {					# tweaked vanilla: subsidized OR profitable
+		is_subsidized = yes
+		AND = {
+			cash_reserves_ratio > 0.5
+			weekly_profit > 0
+		}
+	}
+	state = {
+		sg:electricity = { 
+			state_goods_pricier > 0.33
+		}
+	}
+	NOT = { is_under_construction = yes }	# added from railway: don't build if already is building
+}
+
+xor_government_auto_expand_rule = {
+	occupancy >= 0.8
+	building_has_goods_shortage = no
+	OR = {
+		state.tax_capacity < state.tax_capacity_usage
+		AND = {
+			owner = {
+				bureaucracy < -10
+			}
+			state.tax_capacity < {
+				add = state.tax_capacity_usage 
+				add = 10
+			}
+		}
+	}
+	NOT = { is_under_construction = yes }
+}
