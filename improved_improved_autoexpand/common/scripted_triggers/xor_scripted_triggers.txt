@@ -23,12 +23,12 @@ xor_railway_auto_expand_rule = {
 	}
 	OR = {
 		state = {
-			relative_infrastructure < 1.0 # checks infrastructure directly instead of market access which gets rid of some edge cases where you have low market access but enough infra
+			relative_infrastructure <= 1.0 # checks infrastructure directly instead of market access which gets rid of some edge cases where you have low market access but enough infra
 		}
 		AND = {
 			state = {
 				sg:transportation = {
-					state_goods_pricier > 0.0
+					state_goods_pricier >= 0.0
 				}
 			}
 			OR = {
@@ -156,7 +156,7 @@ xor_power_auto_expand_rule = {
 	}
 	state = {
 		sg:electricity = {
-			state_goods_pricier > 0.0
+			state_goods_pricier >= 0.0
 		}
 	}
 	NOT = { is_under_construction = yes } # added from railway: don't build if already is building
