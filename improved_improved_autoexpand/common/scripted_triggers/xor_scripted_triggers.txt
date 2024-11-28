@@ -1,179 +1,69 @@
 ﻿default_auto_expand_rule = {
-	state.market_access >= 1.0 # stricter than vanilla: don't expand if market access is not 100% because expanding strains low infra (implied from low market access) even more
-	occupancy >= 1.0
-	building_has_goods_shortage = no # not vanilla, but expanding while short on goods increases that issue even more, so don't do it
-	OR = { # subsidized OR profitable
+#	cash_reserves_ratio > 0.95		# vanilla disabled, instead used in OR below
+	state.market_access > 0.99		# stricter than vanilla: don't expand if market access is not 100% because expanding strains low infra (implied from low market access) even more
+	occupancy >= 0.95			# vanilla
+	building_has_goods_shortage = no	# not vanilla, but expanding while short on goods increases that issue even more, so don't do it
+	OR = {					# subsidized OR profitable
 		is_subsidized = yes
 		AND = {
-			cash_reserves_ratio >= 1.0
+			cash_reserves_ratio > 0.95
 			weekly_profit > 0
 		}
 	}
-	NOT = { is_under_construction = yes } # added from railway: don't build if already is building
+	NOT = { is_under_construction = yes }	# added from railway: don't build if already is building
 }
 
 xor_railway_auto_expand_rule = {
-	occupancy >= 1.0
-	OR = { # subsidized OR profitable
+	occupancy >= 0.8			# vanilla
+	OR = {					# tweaked vanilla: subsidized OR profitable
 		is_subsidized = yes
 		AND = {
-			cash_reserves_ratio >= 1.0
-			weekly_profit > 0
-		}
-	}
-	OR = {
-		state = {
-			relative_infrastructure <= 1.0 # checks infrastructure directly instead of market access which gets rid of some edge cases where you have low market access but enough infra
-		}
-		AND = {
-			state = {
-				sg:transportation = {
-					state_goods_pricier >= 0.0
-				}
-			}
-			OR = {
-				is_subsidized = no
-				state = {
-					OR = {
-						is_production_method_active = {
-							building_type = building_livestock_ranch
-							production_method = pm_refrigerated_rail_cars_building_livestock_ranch
-						}
-						is_production_method_active = {
-							building_type = building_coal_mine
-							production_method = pm_rail_transport_mine
-						}
-						is_production_method_active = {
-							building_type = building_iron_mine
-							production_method = pm_rail_transport_mine
-						}
-						is_production_method_active = {
-							building_type = building_lead_mine
-							production_method = pm_rail_transport_mine
-						}
-						is_production_method_active = {
-							building_type = building_sulfur_mine
-							production_method = pm_rail_transport_mine
-						}
-						is_production_method_active = {
-							building_type = building_gold_mine
-							production_method = pm_rail_transport_mine
-						}
-						is_production_method_active = {
-							building_type = building_coffee_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_cotton_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_dye_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_opium_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_tea_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_tobacco_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_sugar_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_banana_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_silk_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_vineyard_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_rubber_plantation
-							production_method = pm_steam_rail_transport
-						}
-						is_production_method_active = {
-							building_type = building_logging_camp
-							production_method = pm_rail_transport_building_logging_camp
-						}
-						is_production_method_active = {
-							building_type = building_logging_camp
-							production_method = pm_log_carts
-						}
-						is_production_method_active = {
-							building_type = building_fishing_wharf
-							production_method = pm_refrigerated_rail_cars_building_fishing_wharf
-						}
-						is_production_method_active = {
-							building_type = building_fishing_wharf
-							production_method = pm_flash_freezing_building_fishing_wharf
-						}
-						is_production_method_active = {
-							building_type = building_whaling_station
-							production_method = pm_refrigerated_rail_cars_building_whaling_station
-						}
-						is_production_method_active = {
-							building_type = building_whaling_station
-							production_method = pm_flash_freezing_building_whaling_station
-						}
-						is_production_method_active = {
-							building_type = building_oil_rig
-							production_method = pm_rail_transport_building_oil_rig
-						}
-						is_production_method_active = {
-							building_type = building_oil_rig
-							production_method = pm_tanker_cars
-						}
-					}
-				}
-			}
-		}
-	}
-	building_has_goods_shortage = no # except if low on goods
-	NOT = { is_under_construction = yes }
-}
-
-xor_power_auto_expand_rule = {
-	occupancy >= 1.0
-	building_has_goods_shortage = no
-	OR = { # subsidized OR profitable
-		is_subsidized = yes
-		AND = {
-			cash_reserves_ratio >= 1.0
+			cash_reserves_ratio > 0.5
 			weekly_profit > 0
 		}
 	}
 	state = {
-		sg:electricity = {
-			state_goods_pricier >= 0.0
+		OR = {
+			sg:transportation = { 
+				state_goods_pricier > 0.25
+			}
+			relative_infrastructure < 1		# checks infrastructure directly instead of market access which gets rid of some edge cases where you have low market access but enough infra
 		}
 	}
-	NOT = { is_under_construction = yes } # added from railway: don't build if already is building
+	building_has_goods_shortage = no	# except if low on goods
+	NOT = { is_under_construction = yes }
+}
+
+xor_power_auto_expand_rule = {
+	occupancy >= 0.95
+	building_has_goods_shortage = no
+	OR = {					# tweaked vanilla: subsidized OR profitable
+		is_subsidized = yes
+		AND = {
+			cash_reserves_ratio > 0.5
+			weekly_profit > 0
+		}
+	}
+	state = {
+		sg:electricity = { 
+			state_goods_pricier > 0.25
+		}
+	}
+	NOT = { is_under_construction = yes }	# added from railway: don't build if already is building
 }
 
 xor_government_auto_expand_rule = {
-	occupancy >= 1.0
+	occupancy >= 0.8
 	building_has_goods_shortage = no
 	OR = {
 		state.tax_capacity < state.tax_capacity_usage
 		AND = {
 			owner = {
-				bureaucracy < -10
+				bureaucracy < -15
 			}
 			state.tax_capacity < {
-				add = state.tax_capacity_usage
-				add = 10
+				add = state.tax_capacity_usage 
+				add = 15
 			}
 		}
 	}
