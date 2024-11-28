@@ -21,12 +21,37 @@ xor_railway_auto_expand_rule = {
 			weekly_profit > 0
 		}
 	}
-	state = {
-		OR = {
-			sg:transportation = { 
-				state_goods_pricier >= 0.0
-			}
+	
+	OR = {
+		state = {
 			relative_infrastructure <= 1.0		# checks infrastructure directly instead of market access which gets rid of some edge cases where you have low market access but enough infra
+		}
+		AND = {
+			state = {
+				sg:transportation = { 
+					state_goods_pricier >= 0.0
+				}
+			}
+			OR = {
+				is_subsidized = no
+				state = {
+					any_scope_building = {
+						OR = {
+							has_active_production_method = pm_refrigerated_rail_cars_building_livestock_ranch
+							has_active_production_method = pm_rail_transport_mine
+							has_active_production_method = pm_steam_rail_transport
+							has_active_production_method = pm_rail_transport_building_logging_camp
+							has_active_production_method = pm_log_carts
+							has_active_production_method = pm_refrigerated_rail_cars_building_fishing_wharf
+							has_active_production_method = pm_flash_freezing_building_fishing_wharf
+							has_active_production_method = pm_refrigerated_rail_cars_building_whaling_station
+							has_active_production_method = pm_flash_freezing_building_whaling_station
+							has_active_production_method = pm_rail_transport_building_oil_rig
+							has_active_production_method = pm_tanker_cars
+						}
+					}
+				}
+			}
 		}
 	}
 	building_has_goods_shortage = no	# except if low on goods
