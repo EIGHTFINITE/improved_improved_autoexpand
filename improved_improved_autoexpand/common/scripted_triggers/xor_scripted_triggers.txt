@@ -1,6 +1,6 @@
 ﻿default_auto_expand_rule = {
 	state.market_access >= 1.0		# stricter than vanilla: don't expand if market access is not 100% because expanding strains low infra (implied from low market access) even more
-	occupancy >= 0.95			# vanilla
+	occupancy >= 1.0			# vanilla
 	building_has_goods_shortage = no	# not vanilla, but expanding while short on goods increases that issue even more, so don't do it
 	OR = {					# subsidized OR profitable
 		is_subsidized = yes
@@ -13,7 +13,7 @@
 }
 
 xor_railway_auto_expand_rule = {
-	occupancy >= 0.8			# vanilla
+	occupancy >= 1.0			# vanilla
 	OR = {					# tweaked vanilla: subsidized OR profitable
 		is_subsidized = yes
 		AND = {
@@ -34,7 +34,7 @@ xor_railway_auto_expand_rule = {
 }
 
 xor_power_auto_expand_rule = {
-	occupancy >= 0.95
+	occupancy >= 1.0
 	building_has_goods_shortage = no
 	OR = {					# tweaked vanilla: subsidized OR profitable
 		is_subsidized = yes
@@ -52,7 +52,7 @@ xor_power_auto_expand_rule = {
 }
 
 xor_government_auto_expand_rule = {
-	occupancy >= 0.8
+	occupancy >= 1.0
 	building_has_goods_shortage = no
 	OR = {
 		state.tax_capacity < state.tax_capacity_usage
